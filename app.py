@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
 import requests
+import os
 
 app = Flask(__name__)
 
@@ -14,7 +15,7 @@ def extract_links():
     
     try:
         # Fetch the webpage content
-        response = requests.get(url)
+        response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
         soup = BeautifulSoup(response.text, "html.parser")
 
         # Find all divs with class "su-button-center"
@@ -29,5 +30,5 @@ def extract_links():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
-  
+    port = int(os.environ.get("PORT", 5000))  # Use Render's assigned port
+    app.run(host='0.0.0.0', port=port)
