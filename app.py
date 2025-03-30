@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 @app.route('/extract-links', methods=['GET'])
-def extract_links():
+def extract_link():
     url = "https://bingotingo.com/best-social-media-platforms/"  # Fixed URL
 
     try:
@@ -14,13 +14,16 @@ def extract_links():
         response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
         soup = BeautifulSoup(response.text, "html.parser")
 
-        # Find all divs with class "su-button-center"
-        divs = soup.find_all("div", class_="su-button-center")
+        # Find the first div with class "su-button-center"
+        div = soup.find("div", class_="su-button-center")
 
-        # Extract all href links
-        links = [div.find("a")["href"] for div in divs if div.find("a") and div.find("a").has_attr("href")]
+        # Extract the first link inside it
+        if div:
+            a_tag = div.find("a")  # Find first <a> inside the div
+            if a_tag and a_tag.has_attr("href"):
+                return jsonify({"link": a_tag["href"]})
 
-        return jsonify({"links": links})
+        return jsonify({"error": "No valid link found"}), 404
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
