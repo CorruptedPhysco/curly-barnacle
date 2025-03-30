@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 from bs4 import BeautifulSoup
 import requests
 import os
@@ -7,12 +7,8 @@ app = Flask(__name__)
 
 @app.route('/extract-links', methods=['GET'])
 def extract_links():
-    # Get the URL from the request
-    url = request.args.get('url')
-    
-    if not url:
-        return jsonify({"error": "URL parameter is required"}), 400
-    
+    url = "https://bingotingo.com/best-social-media-platforms/"  # Fixed URL
+
     try:
         # Fetch the webpage content
         response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
